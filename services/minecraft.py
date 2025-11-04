@@ -1,6 +1,4 @@
 import os
-import discord
-from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from mcstatus import JavaServer
 
