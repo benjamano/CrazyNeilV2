@@ -2,6 +2,7 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from services.minecraft import send_message_to_server
 from utils.tasks import startTasks
 
 load_dotenv()
@@ -40,5 +41,7 @@ async def on_ready():
     startTasks(bot)
     if bot.user:
         print(f"Logged in as {bot.user.name}")
+
+        await send_message_to_server("§b§lCrazy Neil §r§ais Watching...")
 
 bot.run(str(os.getenv("DISCORD_TOKEN")))

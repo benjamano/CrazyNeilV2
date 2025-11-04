@@ -43,6 +43,18 @@ async def checkUserPlayTime(bot):
         else:
             with open("serverPlaytime.txt", "w") as f:
                 f.write(f"{player}:1\n")
+                
+@tasks.loop(minutes=30)
+async def verifyUserPlayTime(bot):
+    playtime = await get_player_playtime_today()
+    
+    for entry in playtime:
+        parts = entry.split(":")
+        if len(parts) == 2:
+            player = parts[0].strip()
+            time = int(parts[1].strip().split()[0])
+            if time >= 300:
+                await send_message_to_server(f"§6§l[§c§lWARNING§6§l]§r §e{player}§r, you have been online for §c§l{time} minutes§r today! §a§oPlease consider taking a break and playing again tomorrow.§r §7- Crazy Neil")
 
 @tasks.loop(time=discord.utils.utcnow().replace(hour=0, minute=0, second=0, microsecond=0).time())
 async def resetPlayTime(bot):

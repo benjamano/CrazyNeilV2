@@ -50,10 +50,7 @@ async def get_player_playtime_today():
 
 async def send_message_to_server(message: str):
     try:
-        server_status = await server.async_status()
-        if server_status.players.online > 0:
-            with MCRcon(rcon_host, rcon_password, rcon_port) as mcr:
-                response = mcr.command(f"say {message}")
-                print(f"Command response: {response}")
+        with MCRcon(rcon_host, rcon_password, rcon_port) as mcr:
+            mcr.command(f"say {message}")
     except Exception as e:
         print(f"Error sending message to server: {e}")
