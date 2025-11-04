@@ -3,3 +3,4 @@ python-dotenv
 mcstatus
 proxmoxer
 requests
+mcrcon

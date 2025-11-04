@@ -2,6 +2,7 @@ import os
 import socket
 from dotenv import load_dotenv
 from mcstatus import JavaServer
+from mcrcon import MCRcon
 
 load_dotenv("../.env")
 
@@ -14,6 +15,10 @@ except Exception as e:
     print("DNS resolution failed:", e)
 
 server = JavaServer.lookup(serverAddress)
+
+rcon_host = os.getenv("MINECRAFT_RCON_HOST", serverAddress)
+rcon_port = int(os.getenv("MINECRAFT_RCON_PORT", "25575"))
+rcon_password = os.getenv("MINECRAFT_RCON_PASSWORD", "")
 
 async def get_online_players() -> list[str]:
     playerNames = []
@@ -42,3 +47,13 @@ async def get_player_playtime_today():
                     playtimes.append(f"{player}: {time} minute(s)")
 
     return playtimes
+
+async def send_message_to_server(message: str):
+    try:
+        server_status = await server.async_status()
+        if server_status.players.online > 0:
+            with MCRcon(rcon_host, rcon_password, rcon_port) as mcr:
+                response = mcr.command(f"say {message}")
+                print(f"Command response: {response}")
+    except Exception as e:
+        print(f"Error sending message to server: {e}")
