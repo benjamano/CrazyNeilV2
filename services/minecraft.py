@@ -3,7 +3,7 @@ import socket
 from dotenv import load_dotenv
 from mcstatus import JavaServer
 
-load_dotenv()
+load_dotenv("/home/ben/CrazyNeilV2/.env")
 
 serverAddress = str(os.getenv("MINECRAFT_SERVER_ADDRESS"))
 print("Server address from env:", serverAddress)
