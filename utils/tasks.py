@@ -33,12 +33,6 @@ async def checkUserPlayTime(bot):
                 for line in lines:
                     if line.startswith(player + ":"):
                         parts = line.strip().split(":")
-                        
-            with open("serverPlaytime.txt", "w") as f:
-                found = False
-                for line in lines:
-                    if line.startswith(player + ":"):
-                        parts = line.strip().split(":")
                         playtime = int(parts[1]) + 1
                         f.write(f"{player}:{playtime}\n")
                         found = True
@@ -49,3 +43,8 @@ async def checkUserPlayTime(bot):
         else:
             with open("serverPlaytime.txt", "w") as f:
                 f.write(f"{player}:1\n")
+
+@tasks.loop(time=discord.utils.utcnow().replace(hour=0, minute=0, second=0, microsecond=0).time())
+async def resetPlayTime(bot):
+    if os.path.exists("serverPlaytime.txt"):
+        os.remove("serverPlaytime.txt")
