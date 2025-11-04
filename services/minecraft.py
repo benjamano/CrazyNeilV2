@@ -1,10 +1,17 @@
 import os
+import socket
 from dotenv import load_dotenv
 from mcstatus import JavaServer
 
 load_dotenv()
 
 serverAddress = str(os.getenv("MINECRAFT_SERVER_ADDRESS"))
+print("Server address from env:", serverAddress)
+
+try:
+    print("Resolving hostname:", socket.gethostbyname(serverAddress))
+except Exception as e:
+    print("DNS resolution failed:", e)
 
 server = JavaServer.lookup(serverAddress)
 
