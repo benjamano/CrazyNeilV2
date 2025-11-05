@@ -20,7 +20,6 @@ class Bot(commands.Bot):
     async def setup_hook(self):
         await load_cogs()
         self.add_command(Help)
-        # Sync app commands (slash commands)
         await self.tree.sync()
 
 @commands.command()
