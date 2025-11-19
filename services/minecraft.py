@@ -31,7 +31,12 @@ async def get_playtime_for_date(date) -> list[str]:
         
         if 'playtime' in data:
             for player, minutes in data['playtime'].items():
-                playerPlaytimes.append(f"{player}: {minutes} minutes")
+                if minutes >= 60:
+                    hours = minutes // 60
+                    mins = minutes % 60
+                    playerPlaytimes.append(f"{player}: {hours}h {mins}m")
+                else:
+                    playerPlaytimes.append(f"{player}: {minutes}m")
                     
     except Exception as e:
         print(f"Error fetching playtime data: {e}")

@@ -30,10 +30,10 @@ class VMStatusDTO:
         hours, remainder = divmod(self.uptime, 3600)
         minutes, seconds = divmod(remainder, 60)
         if hours > 0:
-            uptime_str = f"{hours}:{minutes:02d}:{seconds:02d}"
+            uptime_str = f"{hours}h {minutes:02d}m {seconds:02d}s"
         else:
-            uptime_str = f"{minutes}:{seconds:02d}"
-        
+            uptime_str = f"{minutes}m {seconds:02d}s"
+
         if self.memory_usage >= 1024**3:
             memory_str = f"{self.memory_usage / (1024**3):.2f} GB"
         else: 
