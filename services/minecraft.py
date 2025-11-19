@@ -1,56 +1,20 @@
 import os
-import socket
+import requests
 from dotenv import load_dotenv
-from mcstatus import JavaServer
-from mcrcon import MCRcon
-
 load_dotenv("../.env")
 
-serverAddress = str(os.getenv("MINECRAFT_SERVER_ADDRESS"))
-print("Server address from env:", serverAddress)
-
-try:
-    print("Resolving hostname:", socket.gethostbyname(serverAddress))
-except Exception as e:
-    print("DNS resolution failed:", e)
-
-server = JavaServer.lookup(serverAddress)
-
-rcon_host = os.getenv("MINECRAFT_RCON_HOST", serverAddress)
-rcon_port = int(os.getenv("MINECRAFT_RCON_PORT", "25575"))
-rcon_password = os.getenv("MINECRAFT_RCON_PASSWORD", "")
+apiAddress = str(os.getenv("API_HOST"))
 
 async def get_online_players() -> list[str]:
     playerNames = []
     
     try:
-        status = server.status()
-        if status.players.sample is not None:
-            for player in status.players.sample:
-                playerNames.append(f"{player.name}")
+        status = requests.get(f"http://{apiAddress}/minecraft/playerlist").json()
+        if status["players"] is not None:
+            for player in status["players"]:
+                playerNames.append(player)
     except Exception as e:
         print(f"Error fetching player names: {e}")
         playerNames.append("Could not fetch player names")
 
     return playerNames
-
-async def get_player_playtime_today():
-    playtimes = []
-    
-    if os.path.exists("serverPlaytime.txt"):
-        with open("serverPlaytime.txt", "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                parts = line.strip().split(":")
-                if len(parts) == 2:
-                    player, time = parts
-                    playtimes.append(f"{player}: {time} minute(s)")
-
-    return playtimes
-
-async def send_message_to_server(message: str):
-    try:
-        with MCRcon(rcon_host, rcon_password, rcon_port) as mcr:
-            mcr.command(f"say {message}")
-    except Exception as e:
-        print(f"Error sending message to server: {e}")
