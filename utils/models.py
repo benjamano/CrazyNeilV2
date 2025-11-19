@@ -17,13 +17,14 @@ class MCServerStatusDTO:
         """
         
 class VMStatusDTO:
-    def __init__(self, vmid: int, name: str, status: str, cpu_usage: float, memory_usage: int, uptime: int):
+    def __init__(self, vmid: int, name: str, status: str, cpu_usage: float, memory_usage: int, uptime: int, max_memory: int):
         self.vmid = vmid
         self.name = name
         self.status = status
         self.cpu_usage = cpu_usage
         self.memory_usage = memory_usage
         self.uptime = uptime
+        self.max_memory = max_memory
         
     def __str__(self):
         hours, remainder = divmod(self.uptime, 3600)
@@ -33,16 +34,21 @@ class VMStatusDTO:
         else:
             uptime_str = f"{minutes}:{seconds:02d}"
         
-        if self.memory_usage >= 1024**3:  # GB
+        if self.memory_usage >= 1024**3:
             memory_str = f"{self.memory_usage / (1024**3):.2f} GB"
         else: 
             memory_str = f"{self.memory_usage / (1024**2):.2f} MB"
-        
+
+        if self.max_memory >= 1024**3:
+            max_memory_str = f"{self.max_memory / (1024**3):.2f} GB"
+        else:
+            max_memory_str = f"{self.max_memory / (1024**2):.2f} MB"
+
         return f"""
             - VM ID: {self.vmid}
             \n - Name: {self.name}
             \n - Status: {self.status}
             \n - CPU Usage: {(self.cpu_usage*100):.1f}%
-            \n - Memory Usage: {memory_str}
+            \n - Memory Usage: {memory_str} / {max_memory_str}
             \n - Uptime: {uptime_str}
         """

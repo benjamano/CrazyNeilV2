@@ -41,6 +41,7 @@ async def get_vm_detailed_status(vmId) -> str:
                     cpu_usage=status.get("cpu"),
                     memory_usage=status.get("mem"),
                     uptime=status.get("uptime"),
+                    max_memory=status.get("maxmem"),
                 ))
         except Exception as e:
             print(f"Error fetching VM detailed status: {e}")
