@@ -15,6 +15,6 @@ async def get_online_players() -> list[str]:
                 playerNames.append(player)
     except Exception as e:
         print(f"Error fetching player names: {e}")
-        playerNames.append("Could not fetch player names")
+        playerNames.append("Could not fetch player names, error: " + str(e))
 
     return playerNames
