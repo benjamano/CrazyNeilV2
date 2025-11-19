@@ -20,7 +20,14 @@ class Bot(commands.Bot):
     async def setup_hook(self):
         await load_cogs()
         self.add_command(Help)
-        await self.tree.sync()
+        dev_mode = os.getenv("DEV", "false").lower() == "true"
+        guild_id = os.getenv("GUILD_ID")
+        if dev_mode and guild_id:
+            guild = discord.Object(id=int(guild_id))
+            await self.tree.sync(guild=guild)
+            print(f"Synced commands to guild {guild_id} (dev mode)")
+        else:
+            await self.tree.sync()
 
 @commands.command()
 async def Help(ctx):

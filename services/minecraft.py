@@ -1,7 +1,9 @@
 import os
 import requests
 from utils.models import *
+from services.proxmox import *
 from dotenv import load_dotenv
+
 load_dotenv(".env")
 
 apiAddress = str(os.getenv("API_HOST"))
@@ -24,7 +26,7 @@ async def get_playtime_for_date(date) -> list[str]:
     playerPlaytimes = []
     
     try:
-        response = requests.get(f"https://{apiAddress}/minecraft/getplaytime?date={date}")
+        response = requests.get(f"https://{apiAddress}/minecraft/getplaytime?date={date.strftime('%d-%m-%Y')}")
         data = response.json()
         
         if 'playtime' in data:
@@ -46,17 +48,23 @@ async def get_server_status() -> MCServerStatusDTO:
         latency = status.get("latency", 0.0)
         server_status = "Online" if status.get("online", False) else "Offline"
         
+        player_list : list[str] = requests.get(f"https://{apiAddress}/minecraft/playerlist").json()["players"]
+        
         return MCServerStatusDTO(
             online_players=online_players,
             max_players=max_players,
             latency=latency,
-            status=server_status
+            status=server_status,
+            player_list=player_list,
+            vm_status=await get_vm_status(os.getenv("MCServerVMId"))
         )
     except Exception as e:
         print(f"Error fetching server status: {e}")
         return MCServerStatusDTO(
-            online_players=[],
+            online_players=0,
             max_players=0,
             latency=0.0,
-            status="Error fetching status"
+            status="Error fetching status",
+            player_list=[],
+            vm_status=await get_vm_status(os.getenv("MCServerVMId"))
         )

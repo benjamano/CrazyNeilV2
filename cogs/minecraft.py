@@ -24,7 +24,7 @@ class Minecraft(commands.Cog):
         online_players = await get_playtime_for_date(datetime.now().date())
         embed = discord.Embed(
             title="Online Players",
-            description="\n - ".join(online_players) if online_players else "No players online.",
+            description="\n - ".join(online_players) if online_players else "",
             color=discord.Color.green()
         )
         await interaction.response.send_message(embed=embed)
@@ -32,10 +32,9 @@ class Minecraft(commands.Cog):
     @app_commands.command(name="serverstatus", description="View the status of the minecraft server")
     async def server_status(self, interaction: discord.Interaction):
         server_status = await get_server_status()
-        proxmox_vm_status = await get_vm_status()
         embed = discord.Embed(
             title="Server Status",
-            description=str(server_status) + "\n" + str(proxmox_vm_status),
+            description=str(server_status),
             color=discord.Color.green()
         )
         await interaction.response.send_message(embed=embed)
