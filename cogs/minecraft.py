@@ -3,6 +3,7 @@ from datetime import datetime
 from discord.ext import commands
 from discord import app_commands
 from services.minecraft import *
+from services.proxmox import *
 
 class Minecraft(commands.Cog):
     def __init__(self, bot):
@@ -31,9 +32,10 @@ class Minecraft(commands.Cog):
     @app_commands.command(name="serverstatus", description="View the status of the minecraft server")
     async def server_status(self, interaction: discord.Interaction):
         server_status = await get_server_status()
+        proxmox_vm_status = await get_vm_status()
         embed = discord.Embed(
             title="Server Status",
-            description=str(server_status),
+            description=str(server_status) + "\n" + str(proxmox_vm_status),
             color=discord.Color.green()
         )
         await interaction.response.send_message(embed=embed)

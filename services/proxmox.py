@@ -1,18 +1,24 @@
 import os
+import requests
+from utils.models import *
 from dotenv import load_dotenv
-from proxmoxer import ProxmoxAPI
 
-load_dotenv()
+load_dotenv(".env")
 
-proxmoxHostAddress = str(os.getenv("PROXMOX_HOST_ADDRESS"))
-proxmoxPassword = str(os.getenv("PROXMOX_PASSWORD"))
+apiAddress = str(os.getenv("API_HOST"))
 
-proxmox = ProxmoxAPI(
-    proxmoxHostAddress, user="root@pam", password=proxmoxPassword, verify_ssl=False
-)
+async def get_vm_status() -> str:
+    vmStatus = ""
+    
+    try:
+        status = requests.get(f"https://{apiAddress}/proxmox/getvmstatus?vmid={os.getenv("MCServerVMId")}").json()
+        if status["status"] is not None:
+            if (status["status"] == "running"):
+                vmStatus = "VM is ONLINE"
+            else:
+                vmStatus = "VM is OFFLINE"
+    except Exception as e:
+        print(f"Error fetching VM status: {e}")
+        vmStatus = "Could not fetch VM status, error: " + str(e)
 
-async def get_server_load():
-    node = proxmox.nodes.get("proxmox")
-    if (node is not None):
-        return node["status"]["cpu"]["load"]
-    return None
+    return vmStatus
