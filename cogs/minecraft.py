@@ -28,5 +28,15 @@ class Minecraft(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
         
+    @app_commands.command(name="serverstatus", description="View the status of the minecraft server")
+    async def server_status(self, interaction: discord.Interaction):
+        server_status = await get_server_status()
+        embed = discord.Embed(
+            title="Server Status",
+            description=str(server_status),
+            color=discord.Color.green()
+        )
+        await interaction.response.send_message(embed=embed)
+
 async def setup(bot):
     await bot.add_cog(Minecraft(bot))

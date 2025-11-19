@@ -1,5 +1,6 @@
 import os
 import requests
+from utils.models import *
 from dotenv import load_dotenv
 load_dotenv(".env")
 
@@ -35,3 +36,27 @@ async def get_playtime_for_date(date) -> list[str]:
         playerPlaytimes.append("Could not fetch playtime data, error: " + str(e))
 
     return playerPlaytimes
+
+async def get_server_status() -> MCServerStatusDTO:
+    try:
+        status = requests.get(f"https://{apiAddress}/minecraft/status").json()
+        
+        online_players = status.get("players_online", 0)
+        max_players = status.get("max_players", 0)
+        latency = status.get("latency", 0.0)
+        server_status = "Online" if status.get("online", False) else "Offline"
+        
+        return MCServerStatusDTO(
+            online_players=online_players,
+            max_players=max_players,
+            latency=latency,
+            status=server_status
+        )
+    except Exception as e:
+        print(f"Error fetching server status: {e}")
+        return MCServerStatusDTO(
+            online_players=[],
+            max_players=0,
+            latency=0.0,
+            status="Error fetching status"
+        )
