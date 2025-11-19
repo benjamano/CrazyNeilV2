@@ -23,7 +23,7 @@ class Minecraft(commands.Cog):
     async def playtime(self, interaction: discord.Interaction):
         online_players = await get_playtime_for_date(datetime.now().date())
         embed = discord.Embed(
-            title="Online Players",
+            title="Playtime Today",
             description="\n - ".join(online_players) if online_players else "",
             color=discord.Color.green()
         )
@@ -35,8 +35,9 @@ class Minecraft(commands.Cog):
         embed = discord.Embed(
             title="Server Status",
             description=str(server_status),
-            color=discord.Color.green()
+            color=discord.Color.green(),
         )
+        embed.set_footer(text="Want more info? Type vmstatus and enter the Id '100'")
         await interaction.response.send_message(embed=embed)
 
 async def setup(bot):

@@ -26,3 +26,27 @@ async def get_vm_status(vmId) -> str:
     except Exception as e:
         print(f"Error in get_vm_status: {e}")
         return "Error fetching VM status"
+    
+async def get_vm_detailed_status(vmId) -> str:
+    try:
+        detailedStatus = ""
+        
+        try:
+            status = requests.get(f"https://{apiAddress}/proxmox/getvmdetailedstatus?vmid={vmId}").json()
+            if status is not None:
+                detailedStatus = str(VMStatusDTO(
+                    vmid=status.get("vmid"),
+                    name=status.get("name"),
+                    status=status.get("status"),
+                    cpu_usage=status.get("cpu"),
+                    memory_usage=status.get("mem"),
+                    uptime=status.get("uptime"),
+                ))
+        except Exception as e:
+            print(f"Error fetching VM detailed status: {e}")
+            detailedStatus = "Could not fetch VM detailed status, error: " + str(e)
+
+        return detailedStatus
+    except Exception as e:
+        print(f"Error in get_vm_detailed_status: {e}")
+        return "Error fetching VM detailed status"
