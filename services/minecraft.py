@@ -1,7 +1,8 @@
 import os
 import requests
 from dotenv import load_dotenv
-load_dotenv("../.env")
+
+load_dotenv(".env")
 
 apiAddress = str(os.getenv("API_HOST"))
 
@@ -9,7 +10,7 @@ async def get_online_players() -> list[str]:
     playerNames = []
     
     try:
-        status = requests.get(f"http://{apiAddress}/minecraft/playerlist").json()
+        status = requests.get(f"https://{apiAddress}/minecraft/playerlist").json()
         if status["players"] is not None:
             for player in status["players"]:
                 playerNames.append(player)
