@@ -32,12 +32,12 @@ async def get_vm_detailed_status(vmId) -> str:
         detailedStatus = ""
         
         try:
-            status = requests.get(f"https://{apiAddress}/proxmox/getvmdetailedstatus?vmid={vmId}").json()
+            status = (requests.get(f"https://{apiAddress}/proxmox/getvmdetailedstatus?vmid={vmId}").json())["status"]
             if status is not None:
                 detailedStatus = str(VMStatusDTO(
                     vmid=status.get("vmid"),
                     name=status.get("name"),
-                    status=status.get("status"),
+                    status=status.get("status").title(),
                     cpu_usage=status.get("cpu"),
                     memory_usage=status.get("mem"),
                     uptime=status.get("uptime"),

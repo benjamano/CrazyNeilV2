@@ -42,7 +42,7 @@ class VMStatusDTO:
             - VM ID: {self.vmid}
             \n - Name: {self.name}
             \n - Status: {self.status}
-            \n - CPU Usage: {self.cpu_usage:.1f}%
+            \n - CPU Usage: {(self.cpu_usage*100):.1f}%
             \n - Memory Usage: {memory_str}
             \n - Uptime: {uptime_str}
         """
