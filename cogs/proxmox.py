@@ -8,7 +8,7 @@ class ProxMox(commands.Cog):
 
     @discord.app_commands.command(name="vmstatus", description="Gets the status of a VM by its ID")
     async def proxmox_command(self, interaction: discord.Interaction, value: int):
-        vm_status = await get_vm_status(value)
+        vm_status = await get_vm_detailed_status(value)
         embed = discord.Embed(
             title="VM Status",
             description=vm_status,
