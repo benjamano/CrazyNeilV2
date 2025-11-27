@@ -20,7 +20,7 @@ async def get_vm_status(vmId) -> str:
                     vmStatus = "Offline"
         except Exception as e:
             print(f"Error fetching VM status: {e}")
-            vmStatus = "Could not fetch VM status, error: " + str(e)
+            vmStatus = "Unknown"
 
         return vmStatus
     except Exception as e:
